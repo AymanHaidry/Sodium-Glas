@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sodium Glas - Museum</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+</head>
+<body style="margin:0; background:#020b1c;">
+    <a-scene>
+        <a-sky color="#020b1c"></a-sky>
+
+        <a-box position="0 0.5 -3" width="1.5" height="1" depth="1.5" color="#06162e" metalness="0.8">
+            <a-rect position="0 0.51 0" rotation="-90 0 0" width="1.4" height="1.4" color="#00ff9c" opacity="0.2"></a-rect>
+        </a-box>
+
+        <a-entity 
+            id="item"
+            gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb)" 
+            position="0 1.2 -3" 
+            scale="1 1 1"
+            animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
+        </a-entity>
+
+        <a-light type="ambient" intensity="0.5"></a-light>
+        <a-light type="point" position="2 4 -2" intensity="2" color="#00ff9c"></a-light>
+        
+        <a-camera position="0 2 0"></a-camera>
+    </a-scene>
+
+    <button onclick="window.history.back()" style="position:fixed; bottom:20px; left:20px; z-index:99; background:#00ff9c; border:none; padding:10px; border-radius:5px; font-weight:bold; cursor:pointer;">
+        ← Back to Planet
+    </button>
+</body>
+</html>

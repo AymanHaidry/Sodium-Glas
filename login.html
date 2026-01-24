@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sodium Glas | Entry</title>
+    <style>
+        :root { --neon: #cbefff; }
+        body { 
+            margin: 0; height: 100vh; color: #fff; font-family: 'Candara Light';
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+            background: linear-gradient(45deg, #000, #001a33, #000);
+            background-size: 400% 400%; animation: grad 15s ease infinite;
+        }
+        @keyframes grad { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        
+        .glass-box { 
+            padding: 50px; border-radius: 40px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(30px);
+            text-align: center; width: 320px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        h1 { font-size: 3em; letter-spacing: 12px; margin: 0; font-weight: 100; }
+        input { 
+            width: 100%; padding: 15px; margin: 10px 0; background: rgba(0,0,0,0.2); 
+            border: 1px solid rgba(203, 239, 255, 0.3); color: #fff; border-radius: 12px; outline: none;
+            box-sizing: border-box; font-family: 'Candara Light';
+        }
+        input:focus { border-color: var(--neon); }
+        .btn-group { margin-top: 20px; display: flex; gap: 10px; }
+        button { 
+            flex: 1; padding: 15px; background: var(--neon); color: #000;
+            border: none; border-radius: 12px; font-weight: bold; cursor: pointer;
+            transition: 0.3s; font-family: 'Candara Light';
+        }
+        .secondary { background: transparent; color: var(--neon); border: 1px solid var(--neon); }
+        button:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon); }
+    </style>
+</head>
+<body>
+    <div class="glass-box">
+        <h1>SODIUM</h1>
+        <p style="letter-spacing: 4px; opacity: 0.5; margin-bottom: 30px;">AUTHENTICATION</p>
+        <input type="text" id="user" placeholder="USERNAME">
+        <input type="password" id="pass" placeholder="PASSWORD">
+        <div class="btn-group">
+            <button onclick="handleAuth(true)">LOGIN</button>
+            <button class="secondary" onclick="handleAuth(false)">JOIN</button>
+        </div>
+    </div>
+    <script src="spine.js"></script>
+    <script>
+        function handleAuth(isLogin) {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if(!u || !p) return alert("Credentials required");
+            
+            const result = isLogin ? Concordia.login(u, p) : Concordia.register(u, p);
+            if(result) {
+                sessionStorage.setItem('active_user', JSON.stringify(result));
+                window.location.href = 'index.html';
+            } else {
+                alert(isLogin ? "Invalid Credentials" : "Username Taken");
+            }
+        }
+    </script>
+</body>
+</html>

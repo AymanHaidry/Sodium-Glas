@@ -1,0 +1,116 @@
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sodium Glas - System</title>
+    <style>
+        :root { --bg: #000000; --cell: #ffffff; --neon: #cbefff; --neon-soft: rgba(209, 210, 255, 0.788); }
+        body { 
+            margin: 0; height: 100vh; background: radial-gradient(circle at top, #00043e, var(--bg)); 
+            background-size: 200% 200%; animation: slowRotate 15s ease-in-out infinite;
+            display: flex; justify-content: center; align-items: center; 
+            color: var(--neon); overflow: hidden; font-family: 'Candara Light', sans-serif; 
+        }
+        @keyframes slowRotate { 0%, 100% { background-position: 50% 0%; } 50% { background-position: 50% 100%; } }
+        .header { position: fixed; top: 30px; left: 30px; z-index: 10; letter-spacing: 5px; }
+        .planet-wrapper { perspective: 1200px; }
+        .grid { 
+            display: grid; grid-template-columns: repeat(20, 30px); grid-template-rows: repeat(20, 30px); 
+            gap: 7px; transform: scale(var(--zoom, 1)) rotateX(70deg); 
+            transform-style: preserve-3d; transition: 0.5s; 
+        }
+        .cell { background: var(--cell); border-radius: 34px; cursor: pointer; transition: 0.5s; opacity: 0.3; }
+        .cell:hover { background: var(--neon); opacity: 1; transform: translateZ(20px); box-shadow: 0 0 25px var(--neon); }
+        .modal { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; 
+            align-items: center; justify-content: center; z-index: 100;
+        }
+        .modal-content { 
+            background: rgba(6, 22, 46, 0.5); backdrop-filter: blur(20px);
+            border: 1px solid var(--neon); padding: 40px; border-radius: 30px; 
+            text-align: center; width: 320px; box-shadow: 0 0 50px rgba(0,0,0,1);
+        }
+        button { background: var(--neon); color: #000; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin: 5px 0; font-family: 'Candara Light'; }
+        .secondary { background: transparent; color: var(--neon); border: 1px solid var(--neon); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 style="font-weight:100;">SODIUM <span style="font-weight:900">GLAS</span></h1>
+        <p id="userInfo" style="font-size: 0.7em; opacity: 0.5;"></p>
+    </div>
+
+    <div class="planet-wrapper"><div class="grid" id="grid"></div></div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="slotTitle" style="font-weight: 100; letter-spacing: 3px;">SLOT</h2>
+            <p id="slotStatus" style="opacity:0.6"></p>
+            <button id="mainBtn" onclick="handleAction()"></button>
+            <button class="secondary" onclick="enterMuseum()">Enter Museum</button>
+            <button class="secondary" style="border:none; font-size: 10px;" onclick="closeModal()">CANCEL</button>
+        </div>
+    </div>
+
+    <script src="spine.js"></script>
+    <script>
+        const user = localStorage.getItem('sodium_user') || 'Guest';
+        const uid = localStorage.getItem('sodium_uid') || 'GUEST-000';
+        document.getElementById('userInfo').innerText = `Hello | ID: ${uid}`;
+
+        const grid = document.getElementById('grid');
+        const modal = document.getElementById('modal');
+        let activeSlot = "";
+
+        let zoomLevel = 1;
+        window.onwheel = (e) => {
+            zoomLevel += e.deltaY * -0.0005;
+            zoomLevel = Math.min(Math.max(0.5, zoomLevel), 2.5);
+            grid.style.setProperty('--zoom', zoomLevel);
+        };
+
+        for (let i = 0; i < 400; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            const row = String.fromCharCode(65 + Math.floor(i / 20));
+            const col = (i % 20) + 1;
+            const coord = `${row}-${col}`;
+            cell.onclick = () => {
+                activeSlot = coord;
+                document.getElementById('slotTitle').innerText = "Slot " + coord;
+                const owner = localStorage.getItem('owner_'+coord);
+                const btn = document.getElementById('mainBtn');
+                const status = document.getElementById('slotStatus');
+                
+                if(owner === uid) {
+                    status.innerText = "Status: OWNED BY YOU";
+                    btn.innerText = "Edit Museum";
+                } else if(owner) {
+                    status.innerText = "Status: RESERVED";
+                    btn.style.display = "none";
+                } else {
+                    status.innerText = "Status: AVAILABLE";
+                    btn.innerText = "Rent this plot";
+                    btn.style.display = "block";
+                }
+                modal.style.display = 'flex';
+            };
+            grid.appendChild(cell);
+        }
+
+        function handleAction() {
+            const btnText = document.getElementById('mainBtn').innerText;
+            if(btnText === "Rent this plot") {
+                const msg = `Requesting Slot ${activeSlot}. User ID: ${uid}`;
+                window.location.href = `https://wa.me/917979725061?text=${encodeURIComponent(msg)}`;
+            } else {
+                window.location.href = `museum.html?slot=${activeSlot}&edit=true`;
+            }
+        }
+        function closeModal() { modal.style.display = 'none'; }
+        function enterMuseum() { window.location.href = `museum.html?slot=${activeSlot}`; }
+    </script>
+</body>
+</html>

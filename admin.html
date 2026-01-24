@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Concordia | Admin</title>
+    <style>
+        body { 
+            background: #000; color: #fff; font-family: 'Candara Light'; padding: 50px;
+            background: linear-gradient(45deg, #000, #001a33, #000); background-size: 400% 400%; animation: grad 15s ease infinite;
+        }
+        @keyframes grad { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .glass-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 30px; padding: 40px; }
+        input { background: transparent; border: 1px solid #cbefff; color: #fff; padding: 10px; border-radius: 8px; margin: 5px; font-family: 'Candara Light'; }
+        button { background: #cbefff; border: none; padding: 10px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h1 style="font-weight:100; letter-spacing: 5px;">AUTHORIZATION COMMAND</h1>
+        <p style="opacity:0.5">Use this to grant plot access manually.</p>
+        <hr style="opacity:0.1; margin: 30px 0;">
+        <input type="text" id="slotInp" placeholder="SLOT (e.g. A-1)">
+        <input type="text" id="uidInp" placeholder="USER ID (e.g. SOD-XJ2A1)">
+        <button onclick="authorize()">GRANT PERMISSION</button>
+    </div>
+
+    <script src="spine.js"></script>
+    <script>
+        function authorize() {
+            const s = document.getElementById('slotInp').value.toUpperCase();
+            const u = document.getElementById('uidInp').value.toUpperCase();
+            if(!s || !u) return alert("All fields required");
+            
+            Concordia.authorize(s, u);
+            alert(`SUCCESS: Slot ${s} is now controlled by ${u}`);
+        }
+    </script>
+</body>
+</html>
