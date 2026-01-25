@@ -1,5 +1,5 @@
 const Concordia = {
-    // Auth Logic
+    // Auth Logic - Fixed to handle unique sessions
     register: (user, pass) => {
         if (localStorage.getItem(`auth_${user}`)) return false;
         const uid = "SOD-" + Math.random().toString(36).substr(2, 6).toUpperCase();
@@ -11,14 +11,21 @@ const Concordia = {
         const stored = localStorage.getItem(`auth_${user}`);
         if (!stored) return false;
         const profile = JSON.parse(stored);
-        return profile.pass === pass ? profile : false;
+        if (profile.pass === pass) {
+            // Set session data for the Grid to read
+            localStorage.setItem('sodium_user', profile.user);
+            localStorage.setItem('sodium_uid', profile.uid);
+            return profile;
+        }
+        return false;
     },
     logout: () => {
-        sessionStorage.clear();
+        localStorage.removeItem('sodium_user');
+        localStorage.removeItem('sodium_uid');
         window.location.href = 'login.html';
     },
 
-    // Museum & Ownership Logic
+    // Museum Logic
     getMuseum: (slotId) => {
         const data = localStorage.getItem(`spine_${slotId}`);
         return data ? JSON.parse(data) : { name: `GALLERY ${slotId}`, objects: [] };
@@ -27,7 +34,6 @@ const Concordia = {
         localStorage.setItem(`spine_${slotId}`, JSON.stringify(data));
     },
     authorize: (slotId, userId) => {
-        // FIXED: Now correctly maps to the key the grid checks
         localStorage.setItem(`owner_${slotId}`, userId);
         console.log(`[CONCORDIA] Authorized ${userId} for ${slotId}`);
     }
