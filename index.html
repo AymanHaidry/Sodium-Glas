@@ -84,7 +84,7 @@
         const uid = localStorage.getItem('sodium_uid');
 
         if (!user) window.location.href = 'login.html';
-        document.getElementById('userInfo').innerText = `Hello ${user} | ID: ${uid}`;
+        document.getElementById('userInfo').innerText = `Hello, ${user} | ID: ${uid}`;
 
         const grid = document.getElementById('grid');
         let slotsData = {};
@@ -155,6 +155,7 @@
     </script>
 </body>
 </html>
+
 
 
 
