@@ -43,26 +43,55 @@
         <input type="text" id="user" placeholder="USERNAME">
         <input type="password" id="pass" placeholder="PASSWORD">
         <div class="btn-group">
-            <button onclick="handleAuth(true)">LOGIN</button>
-            <button class="secondary" onclick="handleAuth(false)">JOIN</button>
+            <button id="loginBtn" onclick="handleAuth(true)">LOGIN</button>
+            <button class="secondary" id="joinBtn" onclick="handleAuth(false)">JOIN</button>
         </div>
     </div>
-    <script src="spine.js"></script>
+
     <script>
-        function handleAuth(isLogin) {
+        // REPLACE WITH YOUR ACTUAL DATA
+        const SUPABASE_URL = 'https://umyynnesolilokzetade.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_7Ry0VfCXyP_gumhjyLTdQg_6UKuCLSy';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function handleAuth(isLogin) {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
+
             if(!u || !p) return alert("Credentials required");
-            
-            const result = isLogin ? Concordia.login(u, p) : Concordia.register(u, p);
-            if(result) {
-                sessionStorage.setItem('active_user', JSON.stringify(result));
-                window.location.href = 'index.html';
+
+            if (isLogin) {
+                // --- LOGIN LOGIC ---
+                const { data, error } = await _supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('username', u)
+                    .eq('password', p)
+                    .single();
+
+                if (data) {
+                    localStorage.setItem('sodium_user', data.username);
+                    localStorage.setItem('sodium_uid', data.uid);
+                    window.location.href = 'index.html';
+                } else {
+                    alert("Invalid Credentials");
+                }
             } else {
-                alert(isLogin ? "Invalid Credentials" : "Username Taken");
+                // --- REGISTER (JOIN) LOGIC ---
+                const newUid = 'SOD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                
+                const { data, error } = await _supabase
+                    .from('profiles')
+                    .insert([{ username: u, password: p, uid: newUid }])
+                    .select();
+
+                if (error) {
+                    alert("Username Taken or Error: " + error.message);
+                } else {
+                    alert("Account Created! You can now login.");
+                }
             }
         }
     </script>
 </body>
 </html>
-
