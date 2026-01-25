@@ -1,40 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
     <title>Concordia | Admin</title>
     <style>
         body { 
             background: #000; color: #fff; font-family: 'Candara Light'; padding: 50px;
-            background: linear-gradient(45deg, #000, #001a33, #000); background-size: 400% 400%; animation: grad 15s ease infinite;
+            background: linear-gradient(45deg, #000, #001a33, #000); 
+            background-size: 400% 400%; animation: grad 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
         }
         @keyframes grad { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-        .glass-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 30px; padding: 40px; }
-        input { background: transparent; border: 1px solid #cbefff; color: #fff; padding: 10px; border-radius: 8px; margin: 5px; font-family: 'Candara Light'; }
-        button { background: #cbefff; border: none; padding: 10px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        .glass-card { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            backdrop-filter: blur(20px); 
+            border-radius: 30px; 
+            padding: 40px; 
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        input { 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid #cbefff; 
+            color: #fff; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 10px 0; 
+            font-family: 'Candara Light'; 
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+        }
+        
+        button { 
+            background: #cbefff; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(203, 239, 255, 0.4);
+        }
+
+        .status-msg {
+            margin-top: 20px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
     <div class="glass-card">
-        <h1 style="font-weight:100; letter-spacing: 5px;">AUTHORIZATION COMMAND</h1>
-        <p style="opacity:0.5">Use this to grant plot access manually.</p>
-        <hr style="opacity:0.1; margin: 30px 0;">
-        <input type="text" id="slotInp" placeholder="SLOT (e.g. A-1)">
+        <h1 style="font-weight:100; letter-spacing: 5px; margin-bottom: 10px;">AUTHORIZATION</h1>
+        <p style="opacity:0.5; margin-bottom: 30px;">MANUALLY GRANT PLOT EXCLUSIVITY</p>
+        
+        <input type="text" id="slotInp" placeholder="SLOT COORDINATE (e.g. A-1)">
         <input type="text" id="uidInp" placeholder="USER ID (e.g. SOD-XJ2A1)">
+        
         <button onclick="authorize()">GRANT PERMISSION</button>
+        <div id="status" class="status-msg"></div>
     </div>
 
-    <script src="spine.js"></script>
     <script>
-        function authorize() {
-            const s = document.getElementById('slotInp').value.toUpperCase();
-            const u = document.getElementById('uidInp').value.toUpperCase();
-            if(!s || !u) return alert("All fields required");
+        // REPLACE with your actual Supabase Project details
+        const SUPABASE_URL = 'https://umyynnesolilokzetade.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_7Ry0VfCXyP_gumhjyLTdQg_6UKuCLSy'; 
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function authorize() {
+            const slot = document.getElementById('slotInp').value.toUpperCase().trim();
+            const uid = document.getElementById('uidInp').value.toUpperCase().trim();
+            const statusDiv = document.getElementById('status');
             
-            Concordia.authorize(s, u);
-            alert(`SUCCESS: Slot ${s} is now controlled by ${u}`);
+            if(!slot || !uid) return alert("Please fill in both Slot and User ID");
+
+            statusDiv.innerText = "Processing link to Mumbai...";
+
+            // UPSERT ensures if the plot exists, it updates; if not, it creates it.
+            const { data, error } = await _supabase
+                .from('museums')
+                .upsert({ 
+                    slot_id: slot, 
+                    owner_uid: uid,
+                    museum_name: `Museum ${slot}`,
+                    objects: [] // Creates an empty gallery for the user
+                }, { onConflict: 'slot_id' });
+
+            if (error) {
+                console.error("Database Error:", error);
+                statusDiv.style.color = "#ff6b6b";
+                statusDiv.innerText = "Error: " + error.message;
+            } else {
+                statusDiv.style.color = "#cbefff";
+                statusDiv.innerText = `SUCCESS: ${slot} assigned to ${uid}`;
+                
+                // Clear inputs for the next entry
+                document.getElementById('slotInp').value = "";
+                document.getElementById('uidInp').value = "";
+                
+                alert(`Authorization Complete: ${uid} is now the exclusive owner of ${slot}`);
+            }
         }
     </script>
 </body>
 </html>
-
