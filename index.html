@@ -90,7 +90,7 @@
     <button class="logout-btn" onclick="logout()">DISCONNECT</button>
 
     <div class="header">
-        <h1 class="logo-main">SODIUM <span class="logo-glas">Glas</span></h1>
+        <h1 class="logo-main">SODIUM   <span class="logo-glas">Glas</span></h1>
         <p id="userInfo" style="font-size: 0.7em; opacity: 0.5; margin-top: -15px; margin-left: 5px; letter-spacing: 2px;"></p>
     </div>
 
@@ -115,7 +115,7 @@
         const uid = localStorage.getItem('sodium_uid');
 
         if (!user) window.location.href = 'login.html';
-        document.getElementById('userInfo').innerText = `SYSTEM ACTIVE // ${user} // ${uid}`;
+        document.getElementById('userInfo').innerText = `Hello, ${user} // ${uid}`;
 
         const grid = document.getElementById('grid');
         let slotsData = {};
@@ -181,3 +181,4 @@
     </script>
 </body>
 </html>
+
