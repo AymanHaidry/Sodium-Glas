@@ -4,39 +4,68 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="Screenshot 2025-11-07 203000.png">
     <title>Sodium Glas - System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:wght@100;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root { --bg: #000000; --cell: #ffffff; --neon: #cbefff; --neon-soft: rgba(209, 210, 255, 0.788); }
+        :root { 
+            --bg: #0b0b0b; 
+            --cell: #ffffff; 
+            --neon: #cbefff; 
+            /* Gradient colors from your image */
+            --glas-gradient: linear-gradient(to right, #2ab1eb, #9a66d4, #df7d9b, #f39c7a);
+        }
         
         body { 
             margin: 0; height: 100vh; 
-            background: radial-gradient(circle at top, #00043e, var(--bg)); 
+            background: radial-gradient(circle at top, #00043e, #000000); 
             background-size: 200% 200%; 
             animation: slowRotate 15s ease-in-out infinite;
             display: flex; justify-content: center; align-items: center; 
-            color: var(--neon); overflow: hidden; font-family: 'Candara Light', sans-serif; 
+            color: var(--neon); overflow: hidden; font-family: 'Montserrat', sans-serif; 
         }
 
         @keyframes slowRotate { 0%, 100% { background-position: 50% 0%; } 50% { background-position: 50% 100%; } }
 
-        /* Restored Floating Header Styling */
-        .header { position: fixed; top: 30px; left: 30px; z-index: 10; letter-spacing: 5px; }
+        /* Modified Header for the Image Aesthetic */
+        .header { position: fixed; top: 30px; left: 40px; z-index: 10; }
         
+        .logo-main {
+            font-size: 2.5rem;
+            font-weight: 100;
+            letter-spacing: 8px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* The "Glas" style from your image */
+        .logo-glas {
+            font-family: 'Birthstone', cursive; /* Elegant thin cursive */
+            font-weight: 400;
+            font-size: 4.5rem;
+            letter-spacing: 0;
+            margin-left: -10px;
+            background: var(--glas-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(154, 102, 212, 0.3));
+        }
+
         .logout-btn { 
             position: fixed; top: 30px; right: 30px; z-index: 100;
             background: rgba(203, 239, 255, 0.05); border: 1px solid var(--neon); color: var(--neon);
-            padding: 8px 25px; border-radius: 20px; cursor: pointer; font-family: 'Candara Light';
+            padding: 8px 25px; border-radius: 20px; cursor: pointer; font-family: 'Montserrat';
             backdrop-filter: blur(10px); transition: 0.3s; letter-spacing: 2px;
         }
         .logout-btn:hover { background: var(--neon); color: #000; }
 
-        /* Restored 3D Orientation */
+        /* 3D Grid Orientation */
         .planet-wrapper { perspective: 1200px; }
         
         .grid { 
             display: grid; grid-template-columns: repeat(20, 30px); grid-template-rows: repeat(20, 30px); 
-            gap: 7px; /* Original gap */
-            transform: scale(var(--zoom, 1)) rotateX(70deg); /* Restored 70deg tilt */
+            gap: 7px;
+            transform: scale(var(--zoom, 1)) rotateX(70deg);
             transform-style: preserve-3d; transition: 0.5s; 
         }
 
@@ -52,8 +81,8 @@
             text-align: center; width: 320px; box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
-        button.action { background: var(--neon); color: #000; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin: 5px 0; font-family: 'Candara Light'; }
-        .secondary { background: transparent; color: var(--neon); border: 1px solid var(--neon); padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; margin-top: 5px; font-family: 'Candara Light'; }
+        button.action { background: var(--neon); color: #000; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin: 5px 0; font-family: 'Montserrat'; }
+        .secondary { background: transparent; color: var(--neon); border: 1px solid var(--neon); padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; margin-top: 5px; font-family: 'Montserrat'; }
     </style>
 </head>
 <body>
@@ -61,8 +90,8 @@
     <button class="logout-btn" onclick="logout()">DISCONNECT</button>
 
     <div class="header">
-        <h1 style="font-weight:100; margin:0;">SODIUM <span style="font-weight:900">GLAS</span></h1>
-        <p id="userInfo" style="font-size: 0.7em; opacity: 0.5; margin-top: 5px;"></p>
+        <h1 class="logo-main">SODIUM <span class="logo-glas">Glas</span></h1>
+        <p id="userInfo" style="font-size: 0.7em; opacity: 0.5; margin-top: -15px; margin-left: 5px; letter-spacing: 2px;"></p>
     </div>
 
     <div class="planet-wrapper">
@@ -80,18 +109,18 @@
     </div>
 
     <script>
+        // Keeping your original logic intact
         const _supabase = supabase.createClient('https://umyynnesolilokzetade.supabase.co', 'sb_publishable_7Ry0VfCXyP_gumhjyLTdQg_6UKuCLSy');
         const user = localStorage.getItem('sodium_user');
         const uid = localStorage.getItem('sodium_uid');
 
         if (!user) window.location.href = 'login.html';
-        document.getElementById('userInfo').innerText = `Hello, ${user} | ID: ${uid}`;
+        document.getElementById('userInfo').innerText = `SYSTEM ACTIVE // ${user} // ${uid}`;
 
         const grid = document.getElementById('grid');
         let slotsData = {};
         let activeSlot = "";
 
-        // Restored Zoom Logic
         let zoomLevel = 1;
         window.onwheel = (e) => {
             zoomLevel += e.deltaY * -0.0005;
@@ -108,8 +137,6 @@
                 const row = String.fromCharCode(65 + Math.floor(i / 20));
                 const col = (i % 20) + 1;
                 const coord = `${row}-${col}`;
-                
-                // Add 'owned' class if data exists in Supabase
                 cell.className = 'cell' + (slotsData[coord] ? ' owned' : '');
                 cell.onclick = () => openModal(coord);
                 grid.appendChild(cell);
@@ -122,16 +149,15 @@
             document.getElementById('slotTitle').innerText = "Slot " + coord;
             const btn = document.getElementById('mainBtn');
             const status = document.getElementById('slotStatus');
-
             if(owner === uid) {
-                status.innerText = "Status: OWNED BY YOU";
+                status.innerText = "STATUS: OWNED BY YOU";
                 btn.innerText = "Edit Museum";
                 btn.style.display = "block";
             } else if(owner) {
-                status.innerText = "Status: RESERVED BY " + owner;
+                status.innerText = "STATUS: RESERVED BY " + owner;
                 btn.style.display = "none";
             } else {
-                status.innerText = "Status: AVAILABLE";
+                status.innerText = "STATUS: AVAILABLE";
                 btn.innerText = "Rent Plot";
                 btn.style.display = "block";
             }
@@ -151,10 +177,7 @@
         function logout() { localStorage.clear(); window.location.href = 'login.html'; }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
         function enterMuseum() { window.location.href = `museum.html?slot=${activeSlot}`; }
-        
         init();
     </script>
 </body>
 </html>
-
-
