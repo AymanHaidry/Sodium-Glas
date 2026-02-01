@@ -4,15 +4,8 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="Screenshot 2025-11-07 203000.png">
     <title>Sodium Glas - System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playwrite+GB+S:wght@100..400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Embedding Amsterdam Two via Font-Face (Commonly used local/webfont name) */
-        @font-face {
-            font-family: 'Amsterdam Two';
-            src: url('https://fonts.cdnfonts.com/s/73918/AmsterdamTwo.woff') format('woff');
-        }
-
         :root { --bg: #000000; --cell: #ffffff; --neon: #cbefff; --neon-soft: rgba(209, 210, 255, 0.788); }
         
         body { 
@@ -29,12 +22,6 @@
         /* Restored Floating Header Styling */
         .header { position: fixed; top: 30px; left: 30px; z-index: 10; letter-spacing: 5px; }
         
-        /* Font Change 1: Playwrite England Joined Guides for 'Sodium' */
-        .sodium-font { font-family: 'Playwrite GB S', cursive; font-weight: 100; }
-        
-        /* Font Change 2: Amsterdam Two for 'Glas' */
-        .glas-font { font-family: 'Amsterdam Two', cursive; font-weight: normal; font-size: 1.5em; text-transform: none; letter-spacing: 0; }
-
         .logout-btn { 
             position: fixed; top: 30px; right: 30px; z-index: 100;
             background: rgba(203, 239, 255, 0.05); border: 1px solid var(--neon); color: var(--neon);
@@ -43,12 +30,13 @@
         }
         .logout-btn:hover { background: var(--neon); color: #000; }
 
+        /* Restored 3D Orientation */
         .planet-wrapper { perspective: 1200px; }
         
         .grid { 
             display: grid; grid-template-columns: repeat(20, 30px); grid-template-rows: repeat(20, 30px); 
-            gap: 7px; 
-            transform: scale(var(--zoom, 1)) rotateX(70deg); 
+            gap: 7px; /* Original gap */
+            transform: scale(var(--zoom, 1)) rotateX(70deg); /* Restored 70deg tilt */
             transform-style: preserve-3d; transition: 0.5s; 
         }
 
@@ -56,6 +44,7 @@
         .cell:hover { background: var(--neon); opacity: 1; transform: translateZ(20px); box-shadow: 0 0 25px var(--neon); }
         .owned { background: var(--neon); opacity: 0.72; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
 
+        /* Modal Styling */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
         .modal-content { 
             background: rgba(6, 22, 46, 0.5); backdrop-filter: blur(20px);
@@ -72,10 +61,7 @@
     <button class="logout-btn" onclick="logout()">DISCONNECT</button>
 
     <div class="header">
-        <h1 style="margin:0;">
-            <span class="sodium-font">SODIUM</span> 
-            <span class="glas-font">Glas</span>
-        </h1>
+        <h1 style="font-weight:100; margin:0;">SODIUM <span style="font-weight:900">GLAS</span></h1>
         <p id="userInfo" style="font-size: 0.7em; opacity: 0.5; margin-top: 5px;"></p>
     </div>
 
@@ -85,7 +71,7 @@
 
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2 id="slotTitle" class="sodium-font" style="letter-spacing: 3px;">SLOT</h2>
+            <h2 id="slotTitle" style="font-weight: 100; letter-spacing: 3px;">SLOT</h2>
             <p id="slotStatus" style="opacity:0.6; font-size: 0.8em; margin-bottom: 20px;"></p>
             <button id="mainBtn" class="action" onclick="handleAction()"></button>
             <button class="secondary" onclick="enterMuseum()">Enter Museum</button>
@@ -99,14 +85,13 @@
         const uid = localStorage.getItem('sodium_uid');
 
         if (!user) window.location.href = 'login.html';
-        
-        /* Change 3: Hello, User || ID */
-        document.getElementById('userInfo').innerText = `Hello, ${user} || ${uid}`;
+        document.getElementById('userInfo').innerText = `Hello, ${user} | ID: ${uid}`;
 
         const grid = document.getElementById('grid');
         let slotsData = {};
         let activeSlot = "";
 
+        // Restored Zoom Logic
         let zoomLevel = 1;
         window.onwheel = (e) => {
             zoomLevel += e.deltaY * -0.0005;
@@ -124,6 +109,7 @@
                 const col = (i % 20) + 1;
                 const coord = `${row}-${col}`;
                 
+                // Add 'owned' class if data exists in Supabase
                 cell.className = 'cell' + (slotsData[coord] ? ' owned' : '');
                 cell.onclick = () => openModal(coord);
                 grid.appendChild(cell);
@@ -170,3 +156,4 @@
     </script>
 </body>
 </html>
+
