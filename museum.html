@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" type="image/png" href="Screenshot 2025-11-07 203000.png">
     <title>Sodium Glas | Vault</title>
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root { --bg: #000; --neon: #cbefff; }
@@ -87,7 +84,7 @@
                     </div>
                     <div class="btn-group">
                         <button style="background:#cbefff" onclick="window.open('${obj.url}')">VIEW</button>
-                        <button style="border:1px solid #cbefff; color:#cbefff; background:transparent" onclick="download('${obj.url}', '${obj.name}')">DL</button>
+                        <button style="border:1px solid #cbefff; color:#cbefff; background:transparent" onclick="download('${obj.url}', '${obj.name}')">Download</button>
                     </div>
                 `;
                 tray.appendChild(card);
@@ -130,4 +127,5 @@
     </script>
 </body>
 </html>
+
 
